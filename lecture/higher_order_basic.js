@@ -8,6 +8,15 @@ function map(argArray, argAddValue) {
     argArray[index] += argAddValue;
   }
 }
+
+
+function map(argArray, argFn) {
+  for (let index in argArray) {
+    argArray[index] = argFn(argArray[index]);
+  }
+}
+
+
 function forEach(argArray, argFn) {
   for (let index = 0; index < argArray.length; index++) {
     //console.log(argArray[index]);
@@ -20,12 +29,13 @@ let myList = [10, 20, 30, 40];
 
 // 1) 현재 배열의 값을 화면에 출력 하시오
 // 10 20 30 40
-forEach(myList, (v) => process.stdout.write(`${v}\t`));
-
+forEach(myList, (v) => process.stdout.write(`${v}\t`)); //TODO:복습하기
+myList.forEach(myList, (v) => process.stdout.write(`${v}\t`));
 // 2) 각 배열의 원소에 1을 더하시오 (배열 내 원소값 변경)
 // 요소값 변경 11 21 31 41
-map(myList, 1);
-
+// map(myList, 1);
+map(myList, v => {return v + 1})
+myList.map(v => {return v + 1})
 // 3) 현재 배열의 값을 화면에 출력 하시오
 // 11 21 31 41
 forEach(myList, (v) => {
