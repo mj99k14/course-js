@@ -274,6 +274,9 @@
                  *       this.addTodo();
                  *   });
                  */
+                 document.getElementById('addBtn').addEventListener('click',() =>{
+                    this.addTodo();
+                 });
 
 
                 /*
@@ -291,6 +294,11 @@
                  *       }
                  *   });
                  */
+                 document.getElementById('todoInput').addEventListener('keypress',(e) =>{
+                    if(e.key == 'Enter'){
+                        this.addTodo();
+                    }
+                 });
 
 
                 /*
@@ -307,7 +315,11 @@
                  *       }
                  *   });
                  */
-
+                document.querySelector('.filter-area').addEventListener('click',(e) =>{
+                    if(e.target.classList.contains('filter-btn')){
+                        this.setFilter(e.target.dataset.filter);
+                    }
+                });
 
                 /*
                  * TODO: 할 일 목록 클릭 이벤트 (이벤트 위임)
@@ -332,6 +344,17 @@
                  *       }
                  *   });
                  */
+                 document.getElementById('todoList').addEventListener('click',(e) =>{
+                    const item = e.target.closest('.todo-item');
+                    if(!item) return;
+
+                    const id = parseInt(item.dataset.id);
+                    if(e.target.classList.contains('todo-checkbox')){
+                        this.toggleTodo(id);
+                    }else if(e.target.classList.contains('delete-btn')){
+                        this.deleteTodo(id);
+                    }
+                 });
 
             },
 
@@ -363,7 +386,7 @@
                  *
                  * 힌트: const text = input.value.trim();
                  */
-                const text = null; // TODO: 입력값 가져오기
+                const text = input.value.trim(); // TODO: 입력값 가져오기
 
 
                 /*
@@ -377,6 +400,10 @@
                  *       return;
                  *   }
                  */
+                 if(text === ''){
+                    alert('할일을 입력해주세요!');
+                    return;
+                 }
 
 
                 /*
@@ -394,7 +421,12 @@
                  *       completed: false
                  *   };
                  */
-                const newTodo = null; // TODO: 새 할 일 객체 생성
+                const newTodo = {
+                    id : Date.now(),
+                    text: text,
+                    completed:false
+
+                }; 
 
 
                 /*
@@ -405,7 +437,8 @@
                  * 힌트: this.todos.push(newTodo);
                  */
 
-
+                this.todos.push(newTodo);
+                
                 // 입력창 비우기 & 포커스 (완성되어 있습니다)
                 input.value = '';
                 input.focus();
@@ -441,7 +474,7 @@
                  *
                  * 힌트: const todo = this.todos.find(t => t.id === id);
                  */
-                const todo = null; // TODO: find로 할 일 찾기
+                const todo = this.todos.find(t =>t.id === id);
 
 
                 /*
@@ -455,7 +488,9 @@
                  *       todo.completed = !todo.completed;
                  *   }
                  */
-
+                if(todo){
+                    todo.completed = !todo.completed;
+                }
 
                 // 저장 & 렌더링 (완성되어 있습니다)
                 this.saveToStorage();
@@ -487,6 +522,7 @@
                  *
                  * 힌트: this.todos = this.todos.filter(t => t.id !== id);
                  */
+                 this.todos = this.todos.filter(t = t.id !== id);
 
 
                 // 저장 & 렌더링 (완성되어 있습니다)
@@ -511,7 +547,7 @@
                  *
                  * 힌트: this.currentFilter = filter;
                  */
-
+                this.currentFilter = filter;
 
                 /*
                  * TODO: 필터 버튼 활성화 표시 변경
@@ -525,7 +561,10 @@
                  *       btn.classList.toggle('active', btn.dataset.filter === filter);
                  *   });
                  */
-
+                document.querySelectorAll('.filter-btn').forEach(btn =>{
+                    btn.classList.toggle('active', btn.dataset.filter === filter);
+                    
+                })
 
                 // 렌더링 (완성되어 있습니다)
                 this.render();
@@ -559,6 +598,14 @@
                  *           return this.todos;
                  *   }
                  */
+                 switch (this.currentFilter){
+                    case 'active':
+                        return this.todos.filter(t => !t.completed);
+                    case 'completed':
+                        return this.todos.filter(t => t.completed);
+                    default:
+                        return this.todos;
+                 }
 
                 return this.todos; // TODO: 필터링 로직 구현
             },
@@ -591,6 +638,9 @@
                  *       list.innerHTML = '<li class="empty-message">할 일이 없습니다.</li>';
                  *   }
                  */
+                if (filteredTodos.length === 0) {
+                  list.innerHTML = '<li class="empty-message">할 일이 없습니다.</li>';
+                  }
 
 
                 /*
@@ -613,6 +663,13 @@
                  *       </li>
                  *   `).join('');
                  */
+                 list.innerHTML = filteredTodos.map(todo => `
+                        <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+                           <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
+                            <span class="todo-text">${todo.text}</span>
+                           <button class="delete-btn">삭제</button>
+                        </li>
+                    `).join('');
 
 
                 // 통계 업데이트 (완성되어 있습니다)
@@ -654,7 +711,7 @@
                  *
                  * 힌트: localStorage.setItem('todos', JSON.stringify(this.todos));
                  */
-
+                localStorage.setItem('todos', JSON.stringify(this.todos));
             },
 
 
@@ -681,6 +738,10 @@
                  *       this.todos = JSON.parse(saved);
                  *   }
                  */
+                  const saved = localStorage.getItem('todos');
+                   if (saved) {
+                    this.todos = JSON.parse(saved);
+                   }
 
             }
         };

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Test</title>
 </head>
+
 <body>
 
     <h3>날씨 확인하기</h3>
@@ -39,9 +41,9 @@
             }
 
             const coords = {
-                seoul:   { lat: 37.5665, lon: 126.9780, name: "서울" },
-                busan:   { lat: 35.1796, lon: 129.0756, name: "부산" },
-                daegu:   { lat: 35.8714, lon: 128.6014, name: "대구" },
+                seoul: { lat: 37.5665, lon: 126.9780, name: "서울" },
+                busan: { lat: 35.1796, lon: 129.0756, name: "부산" },
+                daegu: { lat: 35.8714, lon: 128.6014, name: "대구" },
                 incheon: { lat: 37.4563, lon: 126.7052, name: "인천" },
                 gwangju: { lat: 35.1595, lon: 126.8526, name: "광주" }
             };
@@ -51,7 +53,7 @@
             const cityName = coords[city].name;
 
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
-
+            //외부 api 호출
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -76,4 +78,5 @@
     </script>
 
 </body>
+
 </html>
